@@ -10,7 +10,7 @@ activate () {
 }
 
 usage () {
-  echo "Please use one of these arguments: a(ctivate), d(eactivate), i(nstall), u(ninstall), r(unserver), e(export) or c(heck)"
+  echo "Please use one of these arguments: a(ctivate), d(eactivate), install, uninstall, r(unserver) or c(heck)"
 }
 
 if [ "$1" == "activate" ] || [ "$1" == "a" ]; then
@@ -18,18 +18,25 @@ if [ "$1" == "activate" ] || [ "$1" == "a" ]; then
   activate
 elif [ "$1" == "deactivate" ] || [ "$1" == "d" ]; then
   echo "Use the 'deactivate' command instead of this script to deactivate the virtual environment."
-elif [ "$1" == "install" ] || [ "$1" == "i" ]; then
-  echo "Installing Django..."
+elif [ "$1" == "install" ]; then
+  echo "Installing..."
+  #virtualenv --python=python$PYTHON_VERSION $MY_ENV_NAME
+  python3 -m venv $MY_ENV_NAME
   activate
+  cd $MY_ENV_NAME
   pip install --upgrade pip
   pip install django~=$DJANGO_VERSION
-elif [ "$1" == "uninstall" ] || [ "$1" == "u" ]; then
+  cd ..
+  python manage.py migrate
+  python manage.py createsuperuser
+elif [ "$1" == "uninstall" ]; then
   echo "Uninstalling Django..."
   activate
   pip freeze > requirements.txt
   pip uninstall -r requirements.txt -y
   deactivate
   rm -r ./$MY_ENV_NAME/
+  rm db.sqlite3
 elif [ "$1" == "runserver" ] || [ "$1" == "r" ]; then
   activate
   export SECRET_KEY=$MY_KEY
@@ -37,10 +44,6 @@ elif [ "$1" == "runserver" ] || [ "$1" == "r" ]; then
 elif [ "$1" == "check" ] || [ "$1" == "c" ]; then
   activate
   python manage.py check --deploy
-elif [ "$1" == "installvenv" ] || [ "$1" == "v" ]; then
-  virtualenv --python=python$PYTHON_VERSION $MY_ENV_NAME
-elif [ "$1" == "export" ] || [ "$1" == "e" ]; then
-  export SECRET_KEY=$MY_KEY
 else
   usage
 fi
