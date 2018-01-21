@@ -3,6 +3,7 @@
 MY_ENV_NAME=myvenv
 MY_KEY='$yq@drr&9=@u%k8_+k=96ym2p)^q6+hvyrv$t#qg#g^i#yao32'
 DJANGO_VERSION=1.11.0
+PYTHON_VERSION=3.6
 
 activate () {
   . ./$MY_ENV_NAME/bin/activate
@@ -18,7 +19,7 @@ if [ "$1" == "activate" ] || [ "$1" == "a" ]; then
 elif [ "$1" == "deactivate" ] || [ "$1" == "d" ]; then
   echo "Use the 'deactivate' command instead of this script to deactivate the virtual environment."
 elif [ "$1" == "install" ] || [ "$1" == "i" ]; then
-  acho "Installing Django..."
+  echo "Installing Django..."
   activate
   pip install --upgrade pip
   pip install django~=$DJANGO_VERSION
@@ -36,6 +37,8 @@ elif [ "$1" == "runserver" ] || [ "$1" == "r" ]; then
 elif [ "$1" == "check" ] || [ "$1" == "c" ]; then
   activate
   python manage.py check --deploy
+elif [ "$1" == "installvenv" ] || [ "$1" == "v" ]; then
+  virtualenv --python=python$PYTHON_VERSION $MY_ENV_NAME
 else
   usage
 fi
