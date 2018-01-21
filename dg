@@ -10,7 +10,7 @@ activate () {
 }
 
 usage () {
-  echo "Please use one of these arguments: a(ctivate), d(eactivate), i(nstall), u(ninstall), r(unserver) or c(heck)"
+  echo "Please use one of these arguments: a(ctivate), d(eactivate), i(nstall), u(ninstall), r(unserver), e(export) or c(heck)"
 }
 
 if [ "$1" == "activate" ] || [ "$1" == "a" ]; then
@@ -39,6 +39,8 @@ elif [ "$1" == "check" ] || [ "$1" == "c" ]; then
   python manage.py check --deploy
 elif [ "$1" == "installvenv" ] || [ "$1" == "v" ]; then
   virtualenv --python=python$PYTHON_VERSION $MY_ENV_NAME
+elif [ "$1" == "export" ] || [ "$1" == "e" ]; then
+  export SECRET_KEY=$MY_KEY
 else
   usage
 fi
