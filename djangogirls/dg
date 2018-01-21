@@ -1,0 +1,41 @@
+#!/bin/bash
+
+MY_ENV_NAME=myvenv
+MY_KEY='$yq@drr&9=@u%k8_+k=96ym2p)^q6+hvyrv$t#qg#g^i#yao32'
+DJANGO_VERSION=1.11.0
+
+activate () {
+  . ./$MY_ENV_NAME/bin/activate
+}
+
+usage () {
+  echo "Please use one of these arguments: a(ctivate), d(eactivate), i(nstall), u(ninstall), r(unserver) or c(heck)"
+}
+
+if [ "$1" == "activate" ] || [ "$1" == "a" ]; then
+  echo "Make sure to run this command as '. dg a' or 'source dg a', otherwise the activation does not stick."
+  activate
+elif [ "$1" == "deactivate" ] || [ "$1" == "d" ]; then
+  echo "Use the 'deactivate' command instead of this script to deactivate the virtual environment."
+elif [ "$1" == "install" ] || [ "$1" == "i" ]; then
+  acho "Installing Django..."
+  activate
+  pip install --upgrade pip
+  pip install django~=$DJANGO_VERSION
+elif [ "$1" == "uninstall" ] || [ "$1" == "u" ]; then
+  echo "Uninstalling Django..."
+  activate
+  pip freeze > requirements.txt
+  pip uninstall -r requirements.txt -y
+  deactivate
+  rm -r ./$MY_ENV_NAME/
+elif [ "$1" == "runserver" ] || [ "$1" == "r" ]; then
+  activate
+  export SECRET_KEY=$MY_KEY
+  python manage.py runserver --insecure
+elif [ "$1" == "check" ] || [ "$1" == "c" ]; then
+  activate
+  python manage.py check --deploy
+else
+  usage
+fi
